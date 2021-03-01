@@ -75,41 +75,55 @@ function scheduleHtmlParser(html) {
     console.info(timesss)
     let mmm = { courseInfos: []}
 
+
     while ((t = regexT.exec(html)) !== null) {
         const kcmc = /<div class="mtt_item_kcmc" style="text-align:center">(.*?)<\/div>/gm;
         const name = /<div class="mtt_item_jxbmc">(.*?)<\/div>/gm;
         const time = /<div class="mtt_item_room">(.*?)<\/div>/gm;
-        while (((mcs = kcmc.exec(t[5]))!==null) && ((names = name.exec(t[5]))!==null) && ((times = time.exec(t[5]))!==null)){
+        while (((mcs = kcmc.exec(t[5])) !== null) && ((names = name.exec(t[5])) !== null) && ((times = time.exec(t[5])) !== null)) {
             let re = {sections: [], weeks: []}
             re.day = Number.parseInt(t[1])
             re.name = mcs[1]
             re.teacher = names[1]
             let a = times[1].split(",")
-            let q = a[0].split(/-|周/)
+            // let q = a[0].split(/-|周/)
             re.position = a[2]
-            if (q[1]===""){
-                re.weeks.push(Number.parseInt(q[0]))
+            console.info(a)
+            let q;
+            let v;
+            for (let i = 0; i < a.length; i++) {
+                let r = a[i].split("周")
+                if (r.length !== 1) {
+                    q = r[0].split("-")
+                    console.info(re.name,r,q)
+                    if (q.length === 1) {
+                        console.info(q[0])
+                        re.weeks.push(Number.parseInt(q[0]))
 
-            }else{
-                for(let i=Number.parseInt(q[0]);i<=Number.parseInt(q[1]);i++){
-                    console.info(re.name,q[0],q[1])
-                    re.weeks.push(Number.parseInt(i))
+                    } else {
+                        for (let j = Number.parseInt(q[0]); j <= Number.parseInt(q[1]);j++) {
+                            re.weeks.push(Number.parseInt(j))
+                        }
+                    }
+                }else {
+                    v = i ;
+                    break;
                 }
             }
-            
-            console.info(re.name,q,re.weeks)
+            console.info(a)
+            console.info(v)
 
             const s = /第(.*?)节/;
 
-            let r = a[1].split("-")
+            let r = a[v].split("-")
             let o = s.exec(r[0])
             let p = s.exec(r[1])
-            if (p[1]!==""){
-                for(let i=Number.parseInt(o[1]);i<=Number.parseInt(p[1]);i++){
-                    re.sections.push(timesss[i-1])
+            if (p[1] !== "") {
+                for (let i = Number.parseInt(o[1]); i <= Number.parseInt(p[1]); i++) {
+                    re.sections.push(timesss[i - 1])
                 }
-            }else if(p[1]===""){
-                    re.sections.push(timesss[o[1]-1])
+            } else if (p[1] === "") {
+                re.sections.push(timesss[o[1] - 1])
             }
 
             result.push(re)
