@@ -1,4 +1,4 @@
-function scheduleHtmlParser(html) {
+﻿function scheduleHtmlParser(html) {
     let timesss =[
         {
             "section" : 1,
@@ -69,7 +69,7 @@ function scheduleHtmlParser(html) {
     ]
     console.info(html)
     let result = [];
-    //上课时间
+
     const regexT = /<td data-role="item" data-week="(.*?)" data-begin-unit="(.*?)" data-end-unit="(.*?)" rowspan="(.*?)">(.*?)<\/td>/gm;
     let timeFlag = 0;
     console.info(timesss)
@@ -77,13 +77,14 @@ function scheduleHtmlParser(html) {
 
 
     while ((t = regexT.exec(html)) !== null) {
-        const kcmc = /<div class="mtt_item_kcmc" style="text-align:center">(.*?)<\/div>/gm;
+        const kcmc = /<div class="mtt_item_kcmc" style="text-align:center;">(.*?)<span style="color:red;">(.*?)<\/span><\/div>/gm
+        //const kcmc = /<div class="mtt_item_kcmc" style="text-align:center">(.*?)<\/div>/gm;
         const name = /<div class="mtt_item_jxbmc">(.*?)<\/div>/gm;
         const time = /<div class="mtt_item_room">(.*?)<\/div>/gm;
         while (((mcs = kcmc.exec(t[5])) !== null) && ((names = name.exec(t[5])) !== null) && ((times = time.exec(t[5])) !== null)) {
             let re = {sections: [], weeks: []}
             re.day = Number.parseInt(t[1])
-            re.name = mcs[1]
+            re.name = mcs[1]+mcs[2]
             re.teacher = names[1]
             let a = times[1].split(",")
             // let q = a[0].split(/-|周/)
